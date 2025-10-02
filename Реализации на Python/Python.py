@@ -1,0 +1,170 @@
+1. Числа Фибоначчи
+
+
+def fibonacci_recursive(n):
+    """Рекурсивное вычисление чисел Фибоначчи"""
+    if n <= 1:
+        return n
+    return fibonacci_recursive(n-1) + fibonacci_recursive(n-2)
+
+def fibonacci_iterative(n):
+    """Итеративное вычисление чисел Фибоначчи"""
+    if n <= 1:
+        return n
+    
+    a, b = 0, 1
+    for _ in range(2, n+1):
+        a, b = b, a + b
+    return b
+
+def fibonacci_sequence(n):
+    """Генерация последовательности Фибоначчи"""
+    sequence = [0, 1]
+    for i in range(2, n):
+        sequence.append(sequence[i-1] + sequence[i-2])
+    return sequence[:n]
+
+# Пример использования
+if __name__ == "__main__":
+    print("Fibonacci Recursive(10):", fibonacci_recursive(10))
+    print("Fibonacci Iterative(10):", fibonacci_iterative(10))
+    print("Fibonacci Sequence(10):", fibonacci_sequence(10))
+
+
+
+2. Бинарная куча
+
+
+import heapq
+
+class BinaryHeap:
+    """Реализация бинарной кучи"""
+    
+    def __init__(self):
+        self.heap = []
+    
+    def push(self, item):
+        """Добавление элемента в кучу"""
+        heapq.heappush(self.heap, item)
+    
+    def pop(self):
+        """Извлечение минимального элемента"""
+        return heapq.heappop(self.heap) if self.heap else None
+    
+    def peek(self):
+        """Просмотр минимального элемента без извлечения"""
+        return self.heap[0] if self.heap else None
+    
+    def size(self):
+        """Размер кучи"""
+        return len(self.heap)
+    
+    def is_empty(self):
+        """Проверка на пустоту"""
+        return len(self.heap) == 0
+
+# Пример использования
+if __name__ == "__main__":
+    heap = BinaryHeap()
+    numbers = [5, 3, 8, 1, 2, 7]
+    
+    for num in numbers:
+        heap.push(num)
+    
+    print("Binary Heap operations:")
+    print("Min element:", heap.peek())
+    print("Elements in order:")
+    while not heap.is_empty():
+        print(heap.pop(), end=" ")
+    print()
+
+
+3. Хеш-таблица
+
+
+class HashTable:
+    """Реализация хеш-таблицы с методом цепочек"""
+    
+    def __init__(self, size=10):
+        self.size = size
+        self.table = [[] for _ in range(size)]
+    
+    def _hash(self, key):
+        """Хеш-функция"""
+        return hash(key) % self.size
+    
+    def put(self, key, value):
+        """Добавление элемента"""
+        index = self._hash(key)
+        bucket = self.table[index]
+        
+        # Проверка на существование ключа
+        for i, (k, v) in enumerate(bucket):
+            if k == key:
+                bucket[i] = (key, value)
+                return
+        
+        bucket.append((key, value))
+    
+    def get(self, key):
+        """Получение значения по ключу"""
+        index = self._hash(key)
+        bucket = self.table[index]
+        
+        for k, v in bucket:
+            if k == key:
+                return v
+        
+        raise KeyError(f"Key {key} not found")
+    
+    def remove(self, key):
+        """Удаление элемента"""
+        index = self._hash(key)
+        bucket = self.table[index]
+        
+        for i, (k, v) in enumerate(bucket):
+            if k == key:
+                del bucket[i]
+                return
+        
+        raise KeyError(f"Key {key} not found")
+    
+    def __contains__(self, key):
+        """Проверка наличия ключа"""
+        try:
+            self.get(key)
+            return True
+        except KeyError:
+            return False
+    
+    def display(self):
+        """Отображение хеш-таблицы"""
+        for i, bucket in enumerate(self.table):
+            print(f"Bucket {i}: {bucket}")
+
+# Пример использования
+if __name__ == "__main__":
+    ht = HashTable()
+    
+    # Добавление элементов
+    ht.put("apple", 10)
+    ht.put("banana", 20)
+    ht.put("orange", 30)
+    ht.put("apple", 15)  # Обновление значения
+    
+    print("Hash Table contents:")
+    ht.display()
+    
+    print("\nGet operations:")
+    print("apple:", ht.get("apple"))
+    print("banana:", ht.get("banana"))
+    
+    # Проверка наличия ключа
+    print("\nContains check:")
+    print("orange in table:", "orange" in ht)
+    print("grape in table:", "grape" in ht)
+    
+    # Удаление элемента
+    ht.remove("banana")
+    print("\nAfter removing banana:")
+    ht.display()
